@@ -6,7 +6,7 @@ GO         := GO111MODULE=on GO15VENDOREXPERIMENT=1 go
 GO_NOMOD   := GO111MODULE=off go
 GO_VERSION := $(shell $(GO) version | sed -e 's/^[^0-9.]*\([0-9.]*\).*/\1/')
 
-GOLINT     := ${GOPATH}/bin/golint
+GOLINT     := ${GOPATH}/bin/golint -set_exit_status
 
 # go source files, ignore vendor directory
 REGS_OPER_SRCS           = $(shell find $(SOURCES_DIRS) -type f -name '*.go' -not -path "*generated*")
