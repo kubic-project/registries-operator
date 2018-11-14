@@ -161,7 +161,7 @@ $(GOLINT):
 
 .PHONY: check
 check: $(GOLINT)
-	@test -z $(shell gofmt -l $(REGS_OPER_MAIN) | tee /dev/stderr) || echo "[WARN] Fix formatting issues with 'make fmt'"
+	@test -z $(shell gofmt -l $(REGS_OPER_MAIN) | tee /dev/stderr) || echo "[WARN] Fix formatting issues with 'make fmt'" || /bin/false
 	@for d in $$($(GO) list ./... | grep -v /vendor/); do $(GOLINT) $${d}; done
 	@$(GO) tool vet ${REGS_OPER_SRCS}
 
