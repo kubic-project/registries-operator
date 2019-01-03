@@ -17,6 +17,11 @@ executors:
     docker:
       - image: circleci/golang
     working_directory: /go/src/github.com/kubic-project/registries-operator
+  kind-executor:
+    docker:
+      - image: golang:1.11
+    working_directory: /go/src/github.com/kubic-project/registries-operator
+
 
 jobs:
   build-and-run-unit-tests:
@@ -25,14 +30,14 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - golang-pkg-cache
+            - v3-pkg-cache
 
       - run:
           name: Build project from src
           command: make
  
       - save_cache:
-          key: v2-pkg-cache
+          key: v3-pkg-cache
           paths:
             - /go/pkg
 
@@ -58,12 +63,37 @@ jobs:
       - run:
           name: Execute lint tests
           command: make check
+
+  # setup cluster with kind and run e2e tests       
   e2e-operator-tests:
-    executor: golang-executor
+    executor: kind-executor
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Install Docker Client
+          command: |
+            set -x
+            VER="17.03.0-ce"
+            curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
+            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+            mv /tmp/docker/* /usr/bin
+
+      - run:
+          name: Setup Kubernetes Cluster with kind
+          command: |
+            go get github.com/kubernetes-sigs/kind
+            kind create cluster --name="1"
+            echo "--- docker containers --- "
+            docker ps
+            echo "--- ***************** ---"
+            export KUBECONFIG="$(kind get kubeconfig-path --name="1")"
+       
       - run:
           name: Run e2e-tests for k8s operator
-          command: tests/e2e-tests.sh
-# main scheduler. the job run in parallel, but we can manage requirements.
+          command: make e2e-tests
+
 workflows:
   version: 2.1
 
