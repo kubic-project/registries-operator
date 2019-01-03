@@ -58,7 +58,11 @@ jobs:
       - run:
           name: Execute lint tests
           command: make check
-
+  e2e-operator-tests:
+    executor: golang-executor
+      - run:
+          name: Run e2e-tests for k8s operator
+          command: tests/e2e-tests.sh
 # main scheduler. the job run in parallel, but we can manage requirements.
 workflows:
   version: 2.1
@@ -68,3 +72,4 @@ workflows:
       - build-and-run-unit-tests
       - build-docker-image
       - tests-lint
+      - e2e-operator-tests
