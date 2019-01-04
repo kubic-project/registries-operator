@@ -89,7 +89,9 @@ jobs:
       - run:
           name: Setup Kubernetes Cluster with kind
           command: |
-            go get -u github.com/kubernetes-sigs/kind
+            wget https://github.com/kubernetes-sigs/kind/releases/download/0.0.1/kind-linux-amd64
+            chmod +x kind-linux-amd64
+            sudo mv kind-linux-amd64 /usr/bin/kind
             kind create cluster --name="1"
             echo "--- docker containers --- "
             docker ps
