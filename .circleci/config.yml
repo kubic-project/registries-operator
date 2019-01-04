@@ -83,6 +83,7 @@ jobs:
       - run:
           name: Setup Kubernetes Cluster with kind
           command: |
+            ufw disable
             go get github.com/kubernetes-sigs/kind
             kind create cluster --name="1"
             echo "--- docker containers --- "
