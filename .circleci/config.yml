@@ -69,8 +69,6 @@ jobs:
     working_directory: /go/src/github.com/kubic-project/registries-operator
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
 
       - run:
           name: Install Golang
