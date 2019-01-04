@@ -65,7 +65,8 @@ jobs:
 
   # setup cluster with kind and run e2e tests       
   e2e-operator-tests:
-    machine: true
+    machine: 
+      image: circleci/classic:latest
     working_directory: ~/go/src/github.com/kubic-project/registries-operator
     steps:
       - checkout
